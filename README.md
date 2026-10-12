@@ -24,3 +24,11 @@ Excel imports preserve the workbook's advance formula: all payments attributed t
 ## Deployment
 
 The current GitHub Pages site serves the `gh-pages` branch at its root. The built files have been published to that branch. The optional Actions deployment workflow requires selecting **GitHub Actions** in repository Pages settings; it cannot deploy while Pages uses branch publishing. The production build uses `/Budget-Tracking/` as its asset base.
+
+## Shared Google Sheets data
+
+Upload the Excel workbook to Google Drive and open it with Google Sheets. Preserve the `Expenses` and `Member Funds` sheets and their input column names. The current static site can only read a Sheet that permits unauthenticated viewing. Select **Anyone with the link → Viewer** only if those financial records may be public. Do not grant editing permission to visitors.
+
+Click **Connect Google Sheet**, paste the standard Sheet URL, and use **Copy shared link**. That link includes the Sheet ID so every visitor loads the same read-only records. Update records in Google Sheets and refresh the app to reload them; application edits are not written back to Google. To configure the ordinary app URL for all visitors, set `sheetUrl` in `public/shared-source.json`, rebuild, and publish. Never put credentials in that file. A private Sheet requires a backend and Google authentication, which are not configured here.
+
+The app reads Google's XLSX export and reports sharing, network, timeout, and invalid-workbook errors. Cross-origin download behavior must be verified against the chosen Sheet before claiming the connection works. Unit and DOM tests cover the reader with simulated responses; no live Sheet is configured yet.
