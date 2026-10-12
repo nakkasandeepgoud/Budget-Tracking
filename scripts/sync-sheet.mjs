@@ -2,6 +2,7 @@ import fs from 'node:fs/promises';
 import {sheetId} from '../src/google.js';
 import {parseExcel} from '../src/excel.js';
 
+try {
 const config=JSON.parse(await fs.readFile(new URL('../public/shared-source.json',import.meta.url),'utf8'));
 const id=sheetId(config.sheetUrl);
 const response=await fetch(`https://docs.google.com/spreadsheets/d/${id}/export?format=xlsx`,{signal:AbortSignal.timeout(60000)});
@@ -13,3 +14,8 @@ const imported=await parseExcel(bytes);
 imported.database.syncedAt=new Date().toISOString();
 await fs.writeFile(new URL('../public/shared-data.json',import.meta.url),JSON.stringify(imported.database,null,2));
 console.log(`Synchronized ${imported.database.expenses.length} expenses and ${imported.database.members.length} members.`);
+
+} catch(error) {
+ console.error('::error::'+String(error.message).replace(/[\r\n]/g,' '));
+ process.exitCode=1;
+}
