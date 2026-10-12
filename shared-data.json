@@ -16,6 +16,7 @@
       "source": "Collected Fund",
       "remarks": "",
       "sponsorName": "",
+      "category": "Event expenses",
       "reimbursed": 0
     },
     {
@@ -28,6 +29,7 @@
       "source": "Collected Fund",
       "remarks": "",
       "sponsorName": "",
+      "category": "Event expenses",
       "reimbursed": 0
     },
     {
@@ -40,6 +42,7 @@
       "source": "Collected Fund",
       "remarks": "",
       "sponsorName": "",
+      "category": "Event expenses",
       "reimbursed": 0
     },
     {
@@ -52,6 +55,7 @@
       "source": "Collected Fund",
       "remarks": "",
       "sponsorName": "",
+      "category": "Event expenses",
       "reimbursed": 0
     },
     {
@@ -64,6 +68,7 @@
       "source": "Collected Fund",
       "remarks": "",
       "sponsorName": "",
+      "category": "Event expenses",
       "reimbursed": 0
     },
     {
@@ -76,6 +81,7 @@
       "source": "Personal Advance",
       "remarks": "",
       "sponsorName": "",
+      "category": "Event expenses",
       "reimbursed": 0
     },
     {
@@ -88,6 +94,7 @@
       "source": "Collected Fund",
       "remarks": "",
       "sponsorName": "",
+      "category": "Event expenses",
       "reimbursed": 0
     },
     {
@@ -100,6 +107,7 @@
       "source": "Personal Advance",
       "remarks": "",
       "sponsorName": "",
+      "category": "Event expenses",
       "reimbursed": 0
     },
     {
@@ -112,6 +120,7 @@
       "source": "Personal Advance",
       "remarks": "",
       "sponsorName": "",
+      "category": "Event expenses",
       "reimbursed": 0
     },
     {
@@ -124,6 +133,7 @@
       "source": "Collected Fund",
       "remarks": "",
       "sponsorName": "",
+      "category": "Event expenses",
       "reimbursed": 0
     },
     {
@@ -136,6 +146,7 @@
       "source": "Collected Fund",
       "remarks": "",
       "sponsorName": "",
+      "category": "Event expenses",
       "reimbursed": 0
     },
     {
@@ -148,6 +159,7 @@
       "source": "Collected Fund",
       "remarks": "",
       "sponsorName": "",
+      "category": "Event expenses",
       "reimbursed": 0
     },
     {
@@ -160,6 +172,7 @@
       "source": "Personal Advance",
       "remarks": "",
       "sponsorName": "",
+      "category": "Event expenses",
       "reimbursed": 0
     },
     {
@@ -172,6 +185,7 @@
       "source": "Collected Fund",
       "remarks": "",
       "sponsorName": "",
+      "category": "Event expenses",
       "reimbursed": 0
     },
     {
@@ -184,6 +198,7 @@
       "source": "Collected Fund",
       "remarks": "",
       "sponsorName": "",
+      "category": "Event expenses",
       "reimbursed": 0
     },
     {
@@ -196,6 +211,7 @@
       "source": "Personal Advance",
       "remarks": "",
       "sponsorName": "",
+      "category": "Event expenses",
       "reimbursed": 0
     },
     {
@@ -208,6 +224,7 @@
       "source": "Personal Advance",
       "remarks": "",
       "sponsorName": "",
+      "category": "Event expenses",
       "reimbursed": 0
     },
     {
@@ -220,6 +237,7 @@
       "source": "Personal Advance",
       "remarks": "",
       "sponsorName": "",
+      "category": "Event expenses",
       "reimbursed": 0
     },
     {
@@ -232,6 +250,7 @@
       "source": "Personal Advance",
       "remarks": "",
       "sponsorName": "",
+      "category": "Event expenses",
       "reimbursed": 0
     },
     {
@@ -244,6 +263,7 @@
       "source": "Personal Advance",
       "remarks": "",
       "sponsorName": "",
+      "category": "Event expenses",
       "reimbursed": 0
     },
     {
@@ -256,6 +276,7 @@
       "source": "Personal Advance",
       "remarks": "",
       "sponsorName": "",
+      "category": "Event expenses",
       "reimbursed": 0
     },
     {
@@ -268,6 +289,7 @@
       "source": "Personal Advance",
       "remarks": "",
       "sponsorName": "",
+      "category": "Event expenses",
       "reimbursed": 0
     },
     {
@@ -280,6 +302,7 @@
       "source": "Personal Advance",
       "remarks": "",
       "sponsorName": "",
+      "category": "Event expenses",
       "reimbursed": 0
     },
     {
@@ -292,6 +315,7 @@
       "source": "",
       "remarks": "",
       "sponsorName": "",
+      "category": "Event expenses",
       "reimbursed": 0
     }
   ],
@@ -423,5 +447,7 @@
       "sponsor": 0
     }
   ],
-  "syncedAt": "2026-10-12T12:31:44.102Z"
+  "additionalTransactions": [],
+  "budgets": {},
+  "syncedAt": "2026-10-12T12:53:18.716Z"
 }
