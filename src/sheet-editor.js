@@ -11,10 +11,11 @@ function field(label,name,value='',type='text',attributes='') {
 }
 export function mountSheetEditor({state,apiUrl,applySnapshot,render}) {
   if(!apiUrl)return;
+  document.querySelector('#currency').disabled=true;
   const app=document.querySelector('#app'),actions=document.querySelector('.heading-actions');
   const status=document.createElement('p');status.className='shared-notice';status.role='status';status.textContent=message||'Google Sheets database · Changes save to the Sheet after confirmation. Unlock editing to make changes.';
   document.querySelector('.heading').after(status);
-  const lockButton=document.createElement('button');lockButton.className='secondary';lockButton.textContent=editorKey?'Lock editing':'Unlock editing';actions.prepend(lockButton);
+  const lockButton=document.createElement('button');lockButton.className='secondary';lockButton.textContent=editorKey?'Lock editing':'Unlock editing';actions.prepend(lockButton);lockButton.disabled=!state.database?.revision;
   const refreshButton=document.createElement('button');refreshButton.className='secondary';refreshButton.textContent='Refresh data';actions.prepend(refreshButton);
   async function call(action,data,key=editorKey) {
     if(busy)throw new Error('A Sheet operation is already in progress.');

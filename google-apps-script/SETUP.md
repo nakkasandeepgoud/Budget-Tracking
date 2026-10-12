@@ -3,7 +3,7 @@
 The website's read-only shared data already works. Direct saves require this script to be deployed by the Google Sheet owner. This workspace has no usable Google write credentials.
 
 1. Open the existing Durgamatha Sheet. Choose **Extensions → Apps Script**.
-2. Replace the default `Code.gs` with the complete contents of this directory's `Code.gs` and save. It already targets your Sheet and website origin.
+2. In a new Apps Script project, replace the default `Code.gs` with the complete contents of this directory's `Code.gs` and save. If the Sheet already has script code, preserve it; do not overwrite existing functions or install duplicate `doGet` / `doPost` handlers. It already targets your Sheet and website origin.
 3. Select `setupBudgetDatabase` and click **Run**. Review Google's requested spreadsheet permissions and authorize your own project. Existing expense/member data remains intact; empty `Transactions` and `Budgets` tabs are added if missing.
 4. Copy the generated editor key from the Sheet's alert into a password manager. Do not paste it into chat or repository files. If the alert was missed, run `rotateEditorKey` to generate a replacement; this invalidates the previous key.
 5. Choose **Deploy → New deployment → Web app**. Set **Execute as: Me**, **Who has access: Anyone**, then deploy. The endpoint provides public reads, matching the existing public dashboard, while every mutation requires the editor key.

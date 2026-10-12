@@ -7,7 +7,7 @@ import {mountSheetEditor,isSheetBusy} from './sheet-editor.js';
 const key='budget-tracking-v1';
 let state={transactions:[],budgets:{},currency:'INR'};
 let storageError=false;
-let shared=false, sharedLoading=false, sharedError='', sharedUrl='', sharedApiUrl='';
+let shared=false, sharedLoading=false, sharedError='', sharedUrl='', sharedApiUrl='',refreshPending=false;
 try {const saved=JSON.parse(localStorage.getItem(key)); if(saved && Array.isArray(saved.transactions)){state.transactions=saved.transactions.filter(validTransaction);state.budgets=Object.fromEntries(Object.entries(saved.budgets||{}).filter(([k,v])=>/^\d{4}-\d{2}$/.test(k)&&Number.isFinite(v)&&v>=0));state.currency=['INR','USD','EUR','GBP'].includes(saved.currency)?saved.currency:'INR';if(saved.database)state.database=importDatabase(saved.database).database;}} catch {storageError=true;}
 const today=new Date();const localDate=`${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
 let month=localDate.slice(0,7), search='',filter='all';
@@ -88,4 +88,4 @@ async function initializeSharedSource(){
 }
 initializeSharedSource();
 
-setInterval(async()=>{if(!sharedApiUrl||isSheetBusy()||document.hidden||document.querySelector('dialog[open]'))return;try{const snapshot=await sheetRequest(sharedApiUrl,'read');if(isSheetBusy()||document.querySelector('dialog[open]'))return;applySnapshot(snapshot);}catch(error){sharedError=error.message;render();}},30000);
+setInterval(async()=>{if(!sharedApiUrl||refreshPending||isSheetBusy()||document.hidden||document.querySelector('dialog[open]'))return;refreshPending=true;try{const snapshot=await sheetRequest(sharedApiUrl,'read');if(isSheetBusy()||document.querySelector('dialog[open]'))return;applySnapshot(snapshot);}catch(error){sharedError=error.message;render();}finally{refreshPending=false;}},30000);
