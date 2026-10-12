@@ -1,25 +1,19 @@
-name: Deploy to GitHub Pages
-
+name: Sync Google Sheet and deploy
 on:
   push:
     branches: [main]
+  schedule:
+    - cron: '*/15 * * * *'
   workflow_dispatch:
-
 permissions:
-  contents: read
+  contents: write
   pages: write
-  id-token: write
-
 concurrency:
   group: pages
-  cancel-in-progress: true
-
+  cancel-in-progress: false
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -28,13 +22,28 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm test
+      - name: Read shared Google Sheet
+        run: node scripts/sync-sheet.mjs
       - run: npm run build
         env:
           GITHUB_PAGES: 'true'
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/checkout@v4
         with:
-          path: dist
-      - name: Deploy
-        id: deployment
-        uses: actions/deploy-pages@v4
+          ref: gh-pages
+          path: pages-publication
+      - name: Publish synchronized site
+        run: |
+          cd pages-publication
+          git rm -r --ignore-unmatch .
+          cp -R ../dist/. .
+          touch .nojekyll
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "Synchronize Google Sheet and publish site"
+          git push origin gh-pages
+      - name: Request GitHub Pages build
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api --method POST repos/${{ github.repository }}/pages/builds
