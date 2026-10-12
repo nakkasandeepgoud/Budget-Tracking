@@ -29,11 +29,38 @@ function header(sheet,labels) {
     row.eachCell((cell,j)=>{columns[text(cell)]=j;});
     if(labels.every(label=>columns[label]))return {index:i,columns};
   }
-  throw new Error(`Missing expected columns in the ${sheet.name} sheet.`);
+  throw new Error(`Missing expected columns in the ${sheet.name} sheet. First row: ${sheet.getRow(1).values.filter(Boolean).map(String).join(', ')}`);
+}
+function parseDatabaseWorkbook(workbook) {
+  const expensesSheet=workbook.getWorksheet('Expenses'),membersSheet=workbook.getWorksheet('Members'),settings=workbook.getWorksheet('Settings');
+  const eh=header(expensesSheet,['id','date','description','total','paid']);
+  const mh=header(membersSheet,['id','name','annual','cash','sponsor']);
+  const expenses=[],members=[];
+  for(let i=eh.index+1;i<=expensesSheet.rowCount;i++) {
+    const row=expensesSheet.getRow(i),c=name=>row.getCell(eh.columns[name]||16384);
+    if(!text(c('id'))||!text(c('description')))continue;
+    const entry={id:text(c('id')),date:date(c('date')),description:text(c('description')),total:number(c('total')),paid:number(c('paid')),payer:text(c('payer')),source:text(c('source')),remarks:text(c('remarks')),sponsorName:text(c('sponsor'))};
+    const reimbursed=cellValue(c('reimbursed'));
+    if(reimbursed!==null&&reimbursed!==undefined&&reimbursed!=='')entry.reimbursed=number(c('reimbursed'));
+    expenses.push(entry);
+  }
+  for(let i=mh.index+1;i<=membersSheet.rowCount;i++) {
+    const row=membersSheet.getRow(i),c=name=>row.getCell(mh.columns[name]||16384);
+    if(!text(c('id'))||!text(c('name')))continue;
+    members.push({id:text(c('id')),name:text(c('name')),annual:number(c('annual')),cash:number(c('cash')),sponsor:number(c('sponsor'))});
+  }
+  let openingFund;
+  settings.eachRow(row=>row.eachCell((cell,i)=>{
+    if(text(cell).toLowerCase().replace(/[^a-z]/g,'')==='openingfund')openingFund=number(row.getCell(i+1));
+  }));
+  if(openingFund===undefined)throw new Error('Opening fund is missing from the Settings tab.');
+  if(!expenses.length||!members.length)throw new Error('The Sheet has no expense or member records.');
+  return importDatabase({format:'budget-tracking-database-v1',title:'Durgamatha 2026',currency:'INR',openingFund,reportingMonth:expenses.map(e=>e.date.slice(0,7)).sort()[0],advanceRule:'personal-advance-only',expenses,members});
 }
 export async function parseExcel(buffer) {
   const workbook=new ExcelJS.Workbook();
   await workbook.xlsx.load(buffer);
+  if(workbook.getWorksheet('Expenses')&&workbook.getWorksheet('Members')&&workbook.getWorksheet('Settings'))return parseDatabaseWorkbook(workbook);
   const expensesSheet=workbook.getWorksheet('Expenses'),membersSheet=workbook.getWorksheet('Member Funds');
   if(!expensesSheet||!membersSheet)throw new Error('The workbook needs Expenses and Member Funds sheets. Available sheets: '+workbook.worksheets.map(s=>s.name).join(', '));
   const eh=header(expensesSheet,['Date','Description','Total Amount','Amount Paid','Paid By','Funding Source']);
