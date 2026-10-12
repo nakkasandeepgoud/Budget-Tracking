@@ -13,10 +13,15 @@ export function importDatabase(data) {
     memberIds.add(m.id);
   }
   const date = data.reportingMonth + '-01';
-  const transactions = data.expenses.filter(e => e.paid > 0).map(e => ({id:'database-'+e.id, date:e.date, name:e.description, amount:e.paid, type:'expense', category:'Event expenses'}));
+  const transactions = data.expenses.filter(e => e.paid > 0).map(e => ({id:'database-'+e.id, date:e.date, name:e.description, amount:e.paid, type:'expense', category:typeof e.category==='string'?e.category:'Event expenses'}));
   if (data.openingFund > 0) transactions.push({id:'database-opening',date,name:'Opening fund (reporting date assumed)',amount:data.openingFund,type:'income',category:'Opening fund'});
   transactions.push(...data.members.filter(m=>m.cash>0).map(m=>({id:'database-'+m.id,date,name:m.name+' — contribution (reporting date assumed)',amount:m.cash,type:'income',category:'Member contributions'})));
   transactions.push(...data.members.filter(m=>m.sponsor>0).map(m=>({id:'database-sponsor-'+m.id,date,name:m.name+' — sponsorship (reporting date assumed)',amount:m.sponsor,type:'income',category:'Sponsor contributions'})));
+  if(data.additionalTransactions!==undefined){
+    if(!Array.isArray(data.additionalTransactions)||!data.additionalTransactions.every(validTransaction)||new Set(data.additionalTransactions.map(t=>t.id)).size!==data.additionalTransactions.length)throw new Error('Invalid additional transactions.');
+    transactions.push(...data.additionalTransactions.map(t=>({...t,id:'sheet-extra-'+t.id})));
+  }
+  if(data.budgets!==undefined&&(!data.budgets||typeof data.budgets!=='object'||Array.isArray(data.budgets)||Object.entries(data.budgets).some(([k,v])=>!/^\d{4}-(0[1-9]|1[0-2])$/.test(k)||!amount(v))))throw new Error('Invalid shared budgets.');
   if (!transactions.every(validTransaction)) throw new Error('The file contains invalid transaction data.');
   return {transactions, database: JSON.parse(JSON.stringify(data))};
 }
@@ -30,5 +35,6 @@ export function databaseSummary(data) {
     : data.expenses.filter(e=>e.source==='Personal Advance').reduce((s,e)=>s+e.paid-(e.reimbursed||0),0);
   const fundSpent = data.expenses.filter(e=>e.source==='Collected Fund').reduce((s,e)=>s+e.paid,0);
   const sponsor=data.members.reduce((s,m)=>s+m.sponsor,0),reimbursed=data.expenses.reduce((s,e)=>s+(e.reimbursed||0),0);
-  return {total,paid,due:total-paid,collections,advances,fundBalance:data.openingFund+collections+sponsor-fundSpent-reimbursed};
+  const extraNet=(data.additionalTransactions||[]).reduce((s,t)=>s+(t.type==='income'?t.amount:-t.amount),0);
+  return {total,paid,due:total-paid,collections,advances,fundBalance:data.openingFund+collections+sponsor+extraNet-fundSpent-reimbursed};
 }

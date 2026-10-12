@@ -2,10 +2,12 @@ import './style.css';
 import {categories,summarize,validTransaction} from './model.js';
 import {importDatabase,databaseSummary} from './import.js';
 import {sheetId,sheetLink,loadGoogleSheet} from './google.js';
+import {sheetRequest,validateApiUrl} from './sheet-api.js';
+import {mountSheetEditor,isSheetBusy} from './sheet-editor.js';
 const key='budget-tracking-v1';
 let state={transactions:[],budgets:{},currency:'INR'};
 let storageError=false;
-let shared=false, sharedLoading=false, sharedError='', sharedUrl='';
+let shared=false, sharedLoading=false, sharedError='', sharedUrl='', sharedApiUrl='';
 try {const saved=JSON.parse(localStorage.getItem(key)); if(saved && Array.isArray(saved.transactions)){state.transactions=saved.transactions.filter(validTransaction);state.budgets=Object.fromEntries(Object.entries(saved.budgets||{}).filter(([k,v])=>/^\d{4}-\d{2}$/.test(k)&&Number.isFinite(v)&&v>=0));state.currency=['INR','USD','EUR','GBP'].includes(saved.currency)?saved.currency:'INR';if(saved.database)state.database=importDatabase(saved.database).database;}} catch {storageError=true;}
 const today=new Date();const localDate=`${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
 let month=localDate.slice(0,7), search='',filter='all';
@@ -22,7 +24,7 @@ function render(){
  <aside><a class="brand" href="#">◈ <span>budget<span class="brand-dot">.</span></span></a><div class="workspace">PERSONAL WORKSPACE</div><div class="nav active">▦ &nbsp; Overview</div><div class="aside-bottom"><span class="avatar">Y</span><div>Your workspace<small>${shared?'Shared Google Sheet':'Stored on this device'}</small></div></div></aside>
  <main><header><div class="breadcrumb">Workspace <span>/</span> Overview</div><label class="currency">Currency <select id="currency">${['INR','USD','EUR','GBP'].map(c=>`<option ${c===state.currency?'selected':''}>${c}</option>`).join('')}</select></label></header>
  <div class="heading"><div><div class="eyebrow">A LITTLE CLARITY, EVERY DAY</div><h1>Your money, at a glance.</h1><p>Make room for the things that matter.</p></div><div class="heading-actions"><button class="secondary" id="connect-google">${shared?'Change Google Sheet':'Connect Google Sheet'}</button>${shared?'<button class="secondary" id="share-google">Copy shared link</button>':''}<button class="secondary" id="import">↑ Upload Excel / JSON</button><button class="primary" id="add">+ Add transaction</button></div></div><input type="file" id="import-file" accept=".xlsx,.json,application/json,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden>
- ${sharedLoading?'<p class="warning" role="status">Loading shared Google Sheet…</p>':''}${sharedError?`<p class="warning" role="alert">${escape(sharedError)}</p>`:''}${shared?`<p class="shared-notice">Read-only shared view · Edit records in Google Sheets. Scheduled sync runs about every 15 minutes; refresh to see the latest snapshot. <a href="${escape(sharedUrl)}" target="_blank" rel="noopener noreferrer">Open Sheet ↗</a></p>`:''}
+ ${sharedLoading?'<p class="warning" role="status">Loading shared Google Sheet…</p>':''}${sharedError?`<p class="warning" role="alert">${escape(sharedError)}</p>`:''}${shared?`<p class="shared-notice">${sharedApiUrl?'Live Google Sheets database · Authorized editors can save changes in the app.':'Read-only shared view · Edit records in Google Sheets. Scheduled sync runs about every 15 minutes; refresh to see the latest snapshot.'} <a href="${escape(sharedUrl)}" target="_blank" rel="noopener noreferrer">Open Sheet ↗</a></p>`:''}
  ${storageError?'<p class="warning" role="alert">Device storage is unavailable or could not be read. Export your transactions to keep a backup.</p>':''}
  <div class="period"><label for="month">Monthly overview</label><input id="month" type="month" value="${month}" required><span class="local-badge">${shared?'● Shared read-only data':'● Private & local'}</span></div>
  <section class="stats"><article class="balance"><span>Net balance <i>↗</i></span><h2>${money(balance)}</h2><small>Income minus expenses this month</small></article><article><span>Total income <i class="green">↓</i></span><h2>${money(income)}</h2><small>Money coming in</small></article><article><span>Total expenses <i class="orange">↑</i></span><h2>${money(expenses)}</h2><small>Money going out</small></article></section>
@@ -50,9 +52,15 @@ function render(){
  on('budget-form','submit',e=>{e.preventDefault();const amount=Number(new FormData(e.target).get('budget'));if(!Number.isFinite(amount)||amount<0)return;state.budgets[month]=amount;save();render();});
  document.querySelectorAll('.delete').forEach(b=>b.onclick=()=>{if(confirm('Delete this transaction?')){state.transactions=state.transactions.filter(t=>t.id!==b.dataset.id);save();render();}});
  on('export','click',()=>{const csvCell=v=>'"'+String(v).replace(/^[=+@\-]/,"'$&").replace(/"/g,'""')+'"';const csv=['Date,Description,Type,Category,Amount,Currency',...selected.map(t=>[t.date,t.name,t.type,t.category,t.amount,state.currency].map(csvCell).join(','))].join('\r\n');const url=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'}));const a=document.createElement('a');a.href=url;a.download=`budget-${month}.csv`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);});
+ mountSheetEditor({state,apiUrl:sharedApiUrl,applySnapshot,render});
 }
 render();
 
+function applySnapshot(data,selectedMonth){
+ if(data.sheetId&&data.sheetId!==sheetId(sharedUrl))throw new Error('The writer is connected to a different Google Sheet.');
+ const imported=importDatabase(data);state.transactions=imported.transactions;state.database=imported.database;state.budgets=imported.database.budgets||{};
+ if(selectedMonth)month=selectedMonth;sharedError='';render();
+}
 async function initializeSharedSource(){
  try{
   const query=new URLSearchParams(location.search).get('sheet');
@@ -60,20 +68,24 @@ async function initializeSharedSource(){
   if(query)source=sheetLink(query);
   else{
    const response=await fetch(import.meta.env.BASE_URL+'shared-source.json',{cache:'no-store'});
-   if(response.ok){const config=await response.json();source=config.sheetUrl||'';dataUrl=config.dataUrl||'';}
+   if(response.ok){const config=await response.json();source=config.sheetUrl||'';dataUrl=config.dataUrl||'';if(config.apiUrl)sharedApiUrl=validateApiUrl(config.apiUrl);}
   }
   if(!source)return;
   shared=true;sharedLoading=true;sharedUrl=sheetLink(sheetId(source));
   state={transactions:[],budgets:{},currency:'INR'};render();
   let imported;
-  if(dataUrl){
+  if(sharedApiUrl){try{imported=importDatabase(await sheetRequest(sharedApiUrl,'read'));}catch(error){sharedError='Live connection unavailable; showing the last synchronized read-only snapshot. '+error.message;sharedApiUrl='';}}
+  if(!imported&&dataUrl){
    const response=await fetch(import.meta.env.BASE_URL+dataUrl+'?t='+Date.now(),{cache:'no-store',signal:AbortSignal.timeout(30000)});
    if(!response.ok)throw new Error('The shared Sheet has not synchronized yet. The owner should check the Google Sheet sync workflow and sharing settings.');
    imported=importDatabase(await response.json());
-  }else imported=await loadGoogleSheet(sharedUrl);
+  }else if(!imported)imported=await loadGoogleSheet(sharedUrl);
   state.transactions=imported.transactions;state.database=imported.database;
+  state.budgets=imported.database.budgets||{};
   month=imported.database.reportingMonth;
  }catch(error){sharedError=error.message;}
  finally{sharedLoading=false;render();}
 }
 initializeSharedSource();
+
+setInterval(async()=>{if(!sharedApiUrl||isSheetBusy()||document.hidden||document.querySelector('dialog[open]'))return;try{const snapshot=await sheetRequest(sharedApiUrl,'read');if(isSheetBusy()||document.querySelector('dialog[open]'))return;applySnapshot(snapshot);}catch(error){sharedError=error.message;render();}},30000);

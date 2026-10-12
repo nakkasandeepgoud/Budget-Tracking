@@ -39,7 +39,8 @@ function parseDatabaseWorkbook(workbook) {
   for(let i=eh.index+1;i<=expensesSheet.rowCount;i++) {
     const row=expensesSheet.getRow(i),c=name=>row.getCell(eh.columns[name]||16384);
     if(!text(c('id'))||!text(c('description')))continue;
-    const entry={id:text(c('id')),date:date(c('date')),description:text(c('description')),total:number(c('total')),paid:number(c('paid')),payer:text(c('payer')),source:text(c('source')),remarks:text(c('remarks')),sponsorName:text(c('sponsor'))};
+    const entry={id:text(c('id')),date:date(c('date')),description:text(c('description')),total:number(c('total')),paid:number(c('paid')),payer:text(c('payer')),source:text(c('source')),remarks:text(c('remarks')),sponsorName:text(c('sponsor')),category:text(c('category'))||'Event expenses'};
+    if(text(c('dueDate')))entry.dueDate=date(c('dueDate'));
     const reimbursed=cellValue(c('reimbursed'));
     if(reimbursed!==null&&reimbursed!==undefined&&reimbursed!=='')entry.reimbursed=number(c('reimbursed'));
     expenses.push(entry);
@@ -55,7 +56,21 @@ function parseDatabaseWorkbook(workbook) {
   }));
   if(openingFund===undefined)throw new Error('Opening fund is missing from the Settings tab.');
   if(!expenses.length||!members.length)throw new Error('The Sheet has no expense or member records.');
-  return importDatabase({format:'budget-tracking-database-v1',title:'Durgamatha 2026',currency:'INR',openingFund,reportingMonth:expenses.map(e=>e.date.slice(0,7)).sort()[0],advanceRule:'personal-advance-only',expenses,members});
+  const additionalTransactions=[],budgets={};
+  const extraSheet=workbook.getWorksheet('Transactions');
+  if(extraSheet){
+    const h=header(extraSheet,['id','date','name','amount','type','category']);
+    for(let i=h.index+1;i<=extraSheet.rowCount;i++){
+      const row=extraSheet.getRow(i),c=name=>row.getCell(h.columns[name]);if(!text(c('id')))continue;
+      additionalTransactions.push({id:text(c('id')),date:date(c('date')),name:text(c('name')),amount:number(c('amount')),type:text(c('type')),category:text(c('category'))});
+    }
+  }
+  const budgetSheet=workbook.getWorksheet('Budgets');
+  if(budgetSheet){
+    const h=header(budgetSheet,['month','amount']);
+    for(let i=h.index+1;i<=budgetSheet.rowCount;i++){const row=budgetSheet.getRow(i),month=text(row.getCell(h.columns.month));if(month)budgets[month]=number(row.getCell(h.columns.amount));}
+  }
+  return importDatabase({format:'budget-tracking-database-v1',title:'Durgamatha 2026',currency:'INR',openingFund,reportingMonth:expenses.map(e=>e.date.slice(0,7)).sort()[0],advanceRule:'personal-advance-only',expenses,members,additionalTransactions,budgets});
 }
 export async function parseExcel(buffer) {
   const workbook=new ExcelJS.Workbook();

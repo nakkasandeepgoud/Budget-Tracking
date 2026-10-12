@@ -55,4 +55,11 @@ test('Google database tabs use source IDs and the Personal Advance-only rule',as
  assert.equal(result.database.expenses[0].reimbursed,undefined);
  assert.equal(result.transactions.find(t=>t.id==='database-exp-1').amount,40);
  assert.deepEqual(databaseSummary(result.database),{total:140,paid:60,due:80,collections:50,advances:20,fundBalance:110});
+ const extra=workbook.addWorksheet('Transactions');
+ extra.addRow(['id','date','name','amount','type','category']);extra.addRow(['tx-1','2026-10-12','Donation',100,'income','Donations']);
+ const budgets=workbook.addWorksheet('Budgets');budgets.addRow(['month','amount']);budgets.addRow(['2026-10',500]);
+ const updated=await parseExcel(await workbook.xlsx.writeBuffer());
+ assert.equal(updated.database.budgets['2026-10'],500);
+ assert.equal(updated.transactions.find(t=>t.id==='sheet-extra-tx-1').amount,100);
+ assert.equal(databaseSummary(updated.database).fundBalance,210);
 });
