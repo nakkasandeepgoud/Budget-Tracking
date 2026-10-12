@@ -1,0 +1,427 @@
+{
+  "format": "budget-tracking-database-v1",
+  "title": "Durgamatha 2026",
+  "currency": "INR",
+  "openingFund": 17011,
+  "reportingMonth": "2026-10",
+  "advanceRule": "personal-advance-only",
+  "expenses": [
+    {
+      "id": "exp-3",
+      "date": "2026-10-06",
+      "description": "Durga Matha Advance",
+      "total": 5000,
+      "paid": 5000,
+      "payer": "Kiran",
+      "source": "Collected Fund",
+      "remarks": "",
+      "sponsorName": "",
+      "reimbursed": 0
+    },
+    {
+      "id": "exp-4",
+      "date": "2026-10-08",
+      "description": "Carpet",
+      "total": 3000,
+      "paid": 3000,
+      "payer": "Kiran",
+      "source": "Collected Fund",
+      "remarks": "",
+      "sponsorName": "",
+      "reimbursed": 0
+    },
+    {
+      "id": "exp-5",
+      "date": "2026-10-09",
+      "description": "Cloth",
+      "total": 5090,
+      "paid": 5090,
+      "payer": "Kiran",
+      "source": "Collected Fund",
+      "remarks": "",
+      "sponsorName": "",
+      "reimbursed": 0
+    },
+    {
+      "id": "exp-6",
+      "date": "2026-10-09",
+      "description": "Kanduva & Shalva",
+      "total": 1900,
+      "paid": 1900,
+      "payer": "Kiran",
+      "source": "Collected Fund",
+      "remarks": "",
+      "sponsorName": "",
+      "reimbursed": 0
+    },
+    {
+      "id": "exp-7",
+      "date": "2026-10-09",
+      "description": "Lights",
+      "total": 4000,
+      "paid": 4000,
+      "payer": "Kiran",
+      "source": "Collected Fund",
+      "remarks": "",
+      "sponsorName": "",
+      "reimbursed": 0
+    },
+    {
+      "id": "exp-8",
+      "date": "2026-10-10",
+      "description": "Stapler Pins",
+      "total": 90,
+      "paid": 90,
+      "payer": "Sandeep",
+      "source": "Personal Advance",
+      "remarks": "",
+      "sponsorName": "",
+      "reimbursed": 0
+    },
+    {
+      "id": "exp-9",
+      "date": "2026-10-07",
+      "description": "Sarees",
+      "total": 9200,
+      "paid": 9200,
+      "payer": "Sandeep",
+      "source": "Collected Fund",
+      "remarks": "",
+      "sponsorName": "",
+      "reimbursed": 0
+    },
+    {
+      "id": "exp-10",
+      "date": "2026-10-10",
+      "description": "Durga Matha Balance Payment",
+      "total": 20000,
+      "paid": 20000,
+      "payer": "Sandeep",
+      "source": "Personal Advance",
+      "remarks": "",
+      "sponsorName": "",
+      "reimbursed": 0
+    },
+    {
+      "id": "exp-11",
+      "date": "2026-10-10",
+      "description": "CO2",
+      "total": 3000,
+      "paid": 3000,
+      "payer": "Sandeep",
+      "source": "Personal Advance",
+      "remarks": "",
+      "sponsorName": "",
+      "reimbursed": 0
+    },
+    {
+      "id": "exp-12",
+      "date": "2026-10-11",
+      "description": "Flowers",
+      "total": 3000,
+      "paid": 3000,
+      "payer": "Sampath",
+      "source": "Collected Fund",
+      "remarks": "",
+      "sponsorName": "",
+      "reimbursed": 0
+    },
+    {
+      "id": "exp-13",
+      "date": "2026-10-11",
+      "description": "Wire",
+      "total": 500,
+      "paid": 500,
+      "payer": "Kiran",
+      "source": "Collected Fund",
+      "remarks": "",
+      "sponsorName": "",
+      "reimbursed": 0
+    },
+    {
+      "id": "exp-14",
+      "date": "2026-10-11",
+      "description": "Sockets",
+      "total": 100,
+      "paid": 100,
+      "payer": "Kiran",
+      "source": "Collected Fund",
+      "remarks": "",
+      "sponsorName": "",
+      "reimbursed": 0
+    },
+    {
+      "id": "exp-15",
+      "date": "2026-10-11",
+      "description": "Banner Frame",
+      "total": 5700,
+      "paid": 5700,
+      "payer": "Sandeep",
+      "source": "Personal Advance",
+      "remarks": "",
+      "sponsorName": "",
+      "reimbursed": 0
+    },
+    {
+      "id": "exp-16",
+      "date": "2026-10-11",
+      "description": "Sugar",
+      "total": 60,
+      "paid": 60,
+      "payer": "Kiran",
+      "source": "Collected Fund",
+      "remarks": "",
+      "sponsorName": "",
+      "reimbursed": 0
+    },
+    {
+      "id": "exp-17",
+      "date": "2026-10-11",
+      "description": "Tape",
+      "total": 40,
+      "paid": 40,
+      "payer": "Kiran",
+      "source": "Collected Fund",
+      "remarks": "",
+      "sponsorName": "",
+      "reimbursed": 0
+    },
+    {
+      "id": "exp-18",
+      "date": "2026-10-11",
+      "description": "Fruits",
+      "total": 650,
+      "paid": 650,
+      "payer": "Sandeep",
+      "source": "Personal Advance",
+      "remarks": "",
+      "sponsorName": "",
+      "reimbursed": 0
+    },
+    {
+      "id": "exp-19",
+      "date": "2026-10-11",
+      "description": "Flowers",
+      "total": 100,
+      "paid": 100,
+      "payer": "Sandeep",
+      "source": "Personal Advance",
+      "remarks": "",
+      "sponsorName": "",
+      "reimbursed": 0
+    },
+    {
+      "id": "exp-20",
+      "date": "2026-10-11",
+      "description": "Sockets",
+      "total": 150,
+      "paid": 150,
+      "payer": "Sandeep",
+      "source": "Personal Advance",
+      "remarks": "",
+      "sponsorName": "",
+      "reimbursed": 0
+    },
+    {
+      "id": "exp-21",
+      "date": "2026-10-11",
+      "description": "Door Mat",
+      "total": 50,
+      "paid": 50,
+      "payer": "Sandeep",
+      "source": "Personal Advance",
+      "remarks": "",
+      "sponsorName": "",
+      "reimbursed": 0
+    },
+    {
+      "id": "exp-22",
+      "date": "2026-10-11",
+      "description": "Curtain Stitching",
+      "total": 200,
+      "paid": 200,
+      "payer": "Sandeep",
+      "source": "Personal Advance",
+      "remarks": "",
+      "sponsorName": "",
+      "reimbursed": 0
+    },
+    {
+      "id": "exp-23",
+      "date": "2026-10-11",
+      "description": "Puta Manu",
+      "total": 160,
+      "paid": 160,
+      "payer": "Sandeep",
+      "source": "Personal Advance",
+      "remarks": "",
+      "sponsorName": "",
+      "reimbursed": 0
+    },
+    {
+      "id": "exp-24",
+      "date": "2026-10-11",
+      "description": "10 kg Rice",
+      "total": 650,
+      "paid": 650,
+      "payer": "Sandeep",
+      "source": "Personal Advance",
+      "remarks": "",
+      "sponsorName": "",
+      "reimbursed": 0
+    },
+    {
+      "id": "exp-25",
+      "date": "2026-10-11",
+      "description": "Ball Pins and All Pins",
+      "total": 100,
+      "paid": 100,
+      "payer": "Sandeep",
+      "source": "Personal Advance",
+      "remarks": "",
+      "sponsorName": "",
+      "reimbursed": 0
+    },
+    {
+      "id": "exp-26",
+      "date": "2026-10-11",
+      "description": "Panthul Dhakshana",
+      "total": 30000,
+      "paid": 0,
+      "payer": "",
+      "source": "",
+      "remarks": "",
+      "sponsorName": "",
+      "reimbursed": 0
+    }
+  ],
+  "members": [
+    {
+      "id": "member-6",
+      "name": "Praveen",
+      "annual": 3000,
+      "cash": 0,
+      "sponsor": 0
+    },
+    {
+      "id": "member-7",
+      "name": "Prasanna",
+      "annual": 3000,
+      "cash": 5000,
+      "sponsor": 0
+    },
+    {
+      "id": "member-8",
+      "name": "Kiran",
+      "annual": 3000,
+      "cash": 3000,
+      "sponsor": 0
+    },
+    {
+      "id": "member-9",
+      "name": "Anil",
+      "annual": 3000,
+      "cash": 0,
+      "sponsor": 0
+    },
+    {
+      "id": "member-10",
+      "name": "R. Sai",
+      "annual": 3000,
+      "cash": 0,
+      "sponsor": 0
+    },
+    {
+      "id": "member-11",
+      "name": "Sandeep",
+      "annual": 3000,
+      "cash": 5000,
+      "sponsor": 0
+    },
+    {
+      "id": "member-12",
+      "name": "Akhil",
+      "annual": 3000,
+      "cash": 3000,
+      "sponsor": 0
+    },
+    {
+      "id": "member-13",
+      "name": "Sampath",
+      "annual": 3000,
+      "cash": 3000,
+      "sponsor": 0
+    },
+    {
+      "id": "member-14",
+      "name": "Vinay",
+      "annual": 3000,
+      "cash": 0,
+      "sponsor": 0
+    },
+    {
+      "id": "member-15",
+      "name": "Umesh",
+      "annual": 3000,
+      "cash": 3000,
+      "sponsor": 0
+    },
+    {
+      "id": "member-16",
+      "name": "Dhanu",
+      "annual": 3000,
+      "cash": 2000,
+      "sponsor": 0
+    },
+    {
+      "id": "member-17",
+      "name": "Vignesh (Bobi)",
+      "annual": 3000,
+      "cash": 0,
+      "sponsor": 0
+    },
+    {
+      "id": "member-18",
+      "name": "Lucky",
+      "annual": 3000,
+      "cash": 0,
+      "sponsor": 0
+    },
+    {
+      "id": "member-19",
+      "name": "K. Sai",
+      "annual": 3000,
+      "cash": 0,
+      "sponsor": 0
+    },
+    {
+      "id": "member-20",
+      "name": "Latu",
+      "annual": 3000,
+      "cash": 0,
+      "sponsor": 0
+    },
+    {
+      "id": "member-21",
+      "name": "Chiky",
+      "annual": 3000,
+      "cash": 0,
+      "sponsor": 0
+    },
+    {
+      "id": "member-22",
+      "name": "Sunny",
+      "annual": 3000,
+      "cash": 0,
+      "sponsor": 0
+    },
+    {
+      "id": "member-23",
+      "name": "Rajendar",
+      "annual": 3000,
+      "cash": 3150,
+      "sponsor": 0
+    }
+  ],
+  "syncedAt": "2026-10-12T12:29:48.320Z"
+}
