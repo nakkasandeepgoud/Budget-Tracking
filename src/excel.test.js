@@ -37,3 +37,22 @@ test('Excel import rejects payments greater than commitments',async()=>{
 test('Excel import reports missing worksheets',async()=>{
   await assert.rejects(()=>fixture({includeMembers:false}).then(parseExcel),/Expenses and Member Funds/);
 });
+test('Google database tabs use source IDs and the Personal Advance-only rule',async()=>{
+ const workbook=new ExcelJS.Workbook();
+ workbook.addWorksheet('Sheet1');
+ const expenses=workbook.addWorksheet('Expenses');
+ expenses.addRow(['id','date','description','total','paid','payer','remarks','source','sponsor','reimbursed','due']);
+ expenses.addRow(['exp-1','2026-10-01','Fund payment',40,40,'Member','','Collected Fund','','',0]);
+ expenses.addRow(['exp-2','2026-10-02','Personal payment',20,20,'Member','','Personal Advance','',0,0]);
+ expenses.addRow(['exp-3','2026-10-03','Unpaid',80,0,'','','','','',0]);
+ const members=workbook.addWorksheet('Members');
+ members.addRow(['id','name','annual','cash','sponsor']);
+ members.addRow(['member-1','Member',50,50,0]);
+ const settings=workbook.addWorksheet('Settings');
+ settings.addRow(['Setting','Value']);settings.addRow(['Opening fund',100]);
+ const result=await parseExcel(await workbook.xlsx.writeBuffer());
+ assert.equal(result.database.advanceRule,'personal-advance-only');
+ assert.equal(result.database.expenses[0].reimbursed,undefined);
+ assert.equal(result.transactions.find(t=>t.id==='database-exp-1').amount,40);
+ assert.deepEqual(databaseSummary(result.database),{total:140,paid:60,due:80,collections:50,advances:20,fundBalance:110});
+});
