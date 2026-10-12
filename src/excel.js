@@ -35,7 +35,7 @@ export async function parseExcel(buffer) {
   const workbook=new ExcelJS.Workbook();
   await workbook.xlsx.load(buffer);
   const expensesSheet=workbook.getWorksheet('Expenses'),membersSheet=workbook.getWorksheet('Member Funds');
-  if(!expensesSheet||!membersSheet)throw new Error('The workbook needs Expenses and Member Funds sheets.');
+  if(!expensesSheet||!membersSheet)throw new Error('The workbook needs Expenses and Member Funds sheets. Available sheets: '+workbook.worksheets.map(s=>s.name).join(', '));
   const eh=header(expensesSheet,['Date','Description','Total Amount','Amount Paid','Paid By','Funding Source']);
   const mh=header(membersSheet,['Member','Annual Due','Cash Given','Sponsor Amount']);
   const expenses=[],members=[];
